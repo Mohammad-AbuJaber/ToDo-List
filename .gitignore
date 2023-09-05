@@ -1,0 +1,2 @@
+# Ignore .idea folder that comes when running the code live on the browser using WebStorm IDE.
+.idea/
