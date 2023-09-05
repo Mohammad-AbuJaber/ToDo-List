@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="container">
+    <h1>To-Do List</h1>
+    <label for="taskDescription"></label><input type="text" id="taskDescription" placeholder="Enter a new task">
+    <button id="addTaskButton" class="btn">Add Task</button>
+    <label for="search"></label><input type="text" id="search" placeholder="Search for a task">
+    <table id="taskTable">
+        <thead>
+        <tr>
+            <th id="taskID">ID</th>
+            <th id="description">Description</th>
+            <th id="userID">User ID</th>
+            <th id="status">Status</th>
+            <th id="action">Action</th>
+        </tr>
+        </thead>
+        <tbody id="taskList"></tbody>
+    </table>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
