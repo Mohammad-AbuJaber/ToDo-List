@@ -32,6 +32,10 @@ class ToDo {
                 ToDo.updateTodoDescription(taskId, newDescription);
             });
         });
+
+        const footer = document.createElement('tr');
+        footer.innerHTML = `<td colspan="5">Total Tasks: ${todoList.length}</td>`;
+        tableBody.appendChild(footer);
     }
 
     static getStoredTodoList() {
