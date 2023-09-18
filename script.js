@@ -36,6 +36,26 @@ class ToDo {
     static updateTodoListInStorage(updatedTodoList) {
         localStorage.setItem('todoList', JSON.stringify(updatedTodoList));
     }
+
+    static addTask() {
+        const description = document.getElementById('taskDescription').value;
+        if (description) {
+            const todoList = ToDo.getStoredTodoList();
+            const lastId = findLastId();
+            const newTodo = new ToDo(
+                lastId + 1,
+                description,
+                false,
+                1
+            );
+            todoList.push(newTodo);
+            ToDo.updateTodoListInStorage(todoList);
+            ToDo.loadTodoListInTable(todoList);
+            document.getElementById('taskDescription').value = '';
+        } else {
+            alert('Please Enter the Description');
+        }
+    }
 }
 
 async function fetchDataAndDisplay() {
@@ -98,6 +118,14 @@ searchBar.addEventListener("keyup", (e) => {
 
     ToDo.loadTodoListInTable(todoList);
 });
+
+function findLastId() {
+    const todoList = ToDo.getStoredTodoList();
+    return todoList.length > 0 ? todoList[todoList.length - 1].id : 0;
+}
+
+let addButton = document.getElementById('addTaskButton');
+addButton.addEventListener('click', ToDo.addTask);
 
 fetchDataAndDisplay().then(() => {
     console.log("ToDo list fetched and stored successfully!");
