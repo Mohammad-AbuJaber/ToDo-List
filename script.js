@@ -12,19 +12,25 @@ class ToDo {
         const tableBody = document.getElementById('taskList');
         tableBody.innerHTML = '';
 
-        todoList.forEach(todo => {
+        todoList.forEach(task => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${todo.id}</td>
-                <td>${todo.todo}</td>
-                <td>${todo.userId}</td>
-                <td>${todo.completed ? 'Completed' : 'Pending'}</td>
+                <td>${task.id}</td>
+                <td class="editable" contenteditable="true" id="${task.id}">${task.todo}</td>
+                <td>${task.userId}</td>
+                <td>${task.completed ? 'Completed' : 'Pending'}</td>
                 <td>
-                    <button class="btn" onclick="toggleStatus(${todo.id})">Toggle Status</button>
-                    <button class="btn btn-delete" onclick="deleteTask(${todo.id})">Delete</button>
+                    <button class="btn" onclick="toggleStatus(${task.id})">Toggle Status</button>
+                    <button class="btn btn-delete" onclick="deleteTask(${task.id})">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);
+            const descriptionCell = row.querySelector('.editable');
+            descriptionCell.addEventListener('blur', (event) => {
+                const newDescription = event.target.textContent;
+                const taskId = parseInt(event.target.getAttribute('id'));
+                ToDo.updateTodoDescription(taskId, newDescription);
+            });
         });
     }
 
@@ -55,6 +61,18 @@ class ToDo {
         } else {
             alert('Please Enter the Description');
         }
+    }
+
+    static updateTodoDescription(id, newDescription) {
+        const todoList = ToDo.getStoredTodoList().map(task => {
+            if (task.id === id) {
+                task.todo = newDescription.trim() === '' ? task.todo : newDescription;
+            }
+            return task;
+        });
+
+        ToDo.updateTodoListInStorage(todoList);
+        ToDo.loadTodoListInTable(todoList);
     }
 }
 
