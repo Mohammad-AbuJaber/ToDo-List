@@ -89,6 +89,16 @@ function deleteTask(id) {
     ToDo.loadTodoListInTable(todoList);
 }
 
+const searchBar = document.getElementById("search");
+searchBar.addEventListener("keyup", (e) => {
+    const searchString = e.target.value.toLowerCase();
+    const todoList = ToDo.getStoredTodoList().filter(todo => {
+        return todo.todo.toLowerCase().includes(searchString);
+    });
+
+    ToDo.loadTodoListInTable(todoList);
+});
+
 fetchDataAndDisplay().then(() => {
     console.log("ToDo list fetched and stored successfully!");
 });
