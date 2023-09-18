@@ -1,9 +1,5 @@
 const API_URL = 'https://dummyjson.com/todos';
 
-if (localStorage.getItem('lastID') === null) {
-    localStorage.setItem('lastID', '0');
-}
-
 class ToDo {
     constructor(id, description, status, userId) {
         this.id = id;
@@ -12,36 +8,7 @@ class ToDo {
         this.userId = userId;
     }
 
-    async fetchAndDisplayTasks() {
-        try {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-
-            if (!data || !data.todos || !Array.isArray(data.todos)) {
-                throw new Error('Invalid data received from the API');
-            }
-
-            const todoList = data.todos.map(todoData => {
-                return new ToDo(
-                    todoData.id,
-                    todoData.todo,
-                    todoData.completed,
-                    todoData.userId
-                );
-            });
-
-            localStorage.setItem('todoList', JSON.stringify(todoList));
-            const lastID = Math.max(...todoList.map(todo => todo.id));
-            localStorage.setItem('lastID', lastID.toString());
-            console.log(todoList);
-            this.loadTodoListInTable(todoList);
-        } catch (error) {
-            console.error('Error fetching and storing ToDo list:', error);
-            throw error;
-        }
-    }
-
-    loadTodoListInTable(todoList) {
+    static loadTodoListInTable(todoList) {
         const tableBody = document.getElementById('taskList');
         tableBody.innerHTML = '';
 
@@ -61,22 +28,65 @@ class ToDo {
         });
     }
 
-    toggleStatus(id) {
-        // Implement toggleStatus functionality
+    static getStoredTodoList() {
+        const storedTodoList = localStorage.getItem('todoList');
+        return storedTodoList ? JSON.parse(storedTodoList) : [];
     }
 
-    deleteTask(id) {
-        // Implement deleteTask functionality
+    static updateTodoListInStorage(updatedTodoList) {
+        localStorage.setItem('todoList', JSON.stringify(updatedTodoList));
     }
 }
 
 async function fetchDataAndDisplay() {
-    const todoInstance = new ToDo();
     try {
-        await todoInstance.fetchAndDisplayTasks();
+        let todoList = ToDo.getStoredTodoList();
+
+        if (todoList.length === 0) {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+
+            if (!data || !data.todos || !Array.isArray(data.todos)) {
+                throw new Error('Invalid data received from the API');
+            }
+
+            todoList = data.todos.map(todoData => new ToDo(
+                todoData.id,
+                todoData.todo,
+                todoData.completed,
+                todoData.userId
+            ));
+
+            ToDo.updateTodoListInStorage(todoList);
+        }
+
+        console.log(todoList);
+        ToDo.loadTodoListInTable(todoList);
     } catch (error) {
         console.error('Error:', error);
     }
+}
+
+function toggleStatus(id) {
+    const todoList = ToDo.getStoredTodoList().map(todo => {
+        if (todo.id === id) {
+            todo.completed = !todo.completed;
+        }
+        return todo;
+    });
+
+    ToDo.updateTodoListInStorage(todoList);
+    ToDo.loadTodoListInTable(todoList);
+}
+
+function deleteTask(id) {
+    if (!confirm('Are you sure you want to delete this task?')) {
+        return;
+    }
+    const todoList = ToDo.getStoredTodoList().filter(todo => todo.id !== id);
+
+    ToDo.updateTodoListInStorage(todoList);
+    ToDo.loadTodoListInTable(todoList);
 }
 
 fetchDataAndDisplay().then(() => {
