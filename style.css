@@ -13,14 +13,16 @@ body {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
+    overflow: hidden;
 }
 
 input[type="text"] {
-    width: 100%;
+    width: calc(100% - 20px);
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 3px;
+    box-sizing: border-box;
 }
 
 table {
@@ -35,24 +37,20 @@ th, td {
     padding: 8px;
 }
 
-#taskID, #userID{
-    width: 1rem;
+#taskID, #userID {
+    width: 10%;
 }
 
-#status{
-    width: 3rem;
+#status {
+    width: 10%;
 }
 
-#description{
-    width: 20rem;
+#description {
+    width: 40%;
 }
 
-#action{
-    width: 12rem;
-}
-
-#taskDescription, #search {
-    width: 20rem;
+#action {
+    width: 20%;
 }
 
 .btn {
@@ -64,4 +62,37 @@ th, td {
     margin-bottom: 20px;
     border-radius: 3px;
     transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0a49f6;
+}
+
+.btn-delete:hover {
+    background-color: #dc3545;
+}
+
+::-webkit-scrollbar {
+    width: 0.5rem;
+    background-color: #424751;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #007BFF;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #0a49f6;
+}
+
+@media (max-width: 768px) {
+    #description {
+        width: 30%;
+    }
+}
+
+@media (max-width: 576px) {
+    #description {
+        width: 50%;
+    }
 }
